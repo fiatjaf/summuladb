@@ -10,7 +10,7 @@
     "pretest": "npm run before",
     "build": "mkdir -p dist && browserify -vd summuladb.js -r levelup > dist/summuladb.js",
     "build-prod": "mkdir -p dist && browserify -v summuladb.js -r levelup | uglifyjs > dist/summuladb.min.js",
-    "test": "node test.js"
+    "test": "node --require source-map-support/register test.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "pouchdb": "^6.1.2"
   },
   "devDependencies": {
+    "blue-tape": "^1.0.0",
     "browserify": "^14.3.0",
     "browserify-incremental": "^3.1.1",
     "source-map-support": "^0.4.14",
