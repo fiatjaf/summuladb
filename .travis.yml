@@ -8,6 +8,6 @@ before_install:
   - npm install
 install:
   - go get -u github.com/gopherjs/gopherjs
-  - go get -tags levelupjs github.com/fiatjaf/summadb/...
+  - go get -tags levelupjs github.com/summadb/summadb/...
 script:
   - npm run test

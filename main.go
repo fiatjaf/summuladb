@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/fiatjaf/summadb/database"
-	"github.com/fiatjaf/summadb/types"
+	"github.com/summadb/summadb/database"
+	"github.com/summadb/summadb/types"
 	"github.com/gopherjs/gopherjs/js"
 )
 

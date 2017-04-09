@@ -2,4 +2,4 @@
 
 # SummulaDB
 
-A [SummaDB](https://github.com/fiatjaf/summadb) that runs in the browser.
+A [SummaDB](https://github.com/summadb/summadb) that runs in the browser.
