@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/summadb/summadb/database"
 	"github.com/summadb/summadb/types"
-	"github.com/gopherjs/gopherjs/js"
 )
 
 func main() {
@@ -25,8 +25,12 @@ func newDatabase(name, adapter string, path types.Path) summula {
 		"path": func(rawpath string) summula {
 			return newDatabase(name, adapter, types.ParsePath(rawpath))
 		},
-		"child": func(key string) summula {
-			return newDatabase(name, adapter, path.Child(key))
+		"child": func(keys ...string) summula {
+			newpath := path.Copy()
+			for _, key := range keys {
+				newpath = append(newpath, key)
+			}
+			return newDatabase(name, adapter, newpath)
 		},
 		"parent": func() summula {
 			return newDatabase(name, adapter, path.Parent())
