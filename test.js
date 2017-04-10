@@ -142,7 +142,7 @@ tape('map functions', function (t) {
           coffee: 34
         }
       },
-      '@map': `
+      '!map': `
 local i = 0
 for time, items in pairs(doc) do
   for name, value in pairs(items) do
@@ -154,7 +154,7 @@ end
     }
   })
   .then(delay(300))
-  .then(() => db.child('days', '@map', 'sales').read())
+  .then(() => db.child('days', '!map', 'sales').read())
   .then(sales => {
     console.log('SALES', sales)
     t.equal(Object.keys(sales).length, 9, 'got correct number of sales')
