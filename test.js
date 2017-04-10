@@ -1,5 +1,6 @@
 const tape = require('blue-tape')
-const SummulaDB = require('./summuladb')
+const delay = require('delay')
+const SummulaDB = typeof window !== 'undefined' && window.SummulaDB || require('./summuladb')
 
 function newdb () {
   return SummulaDB(Math.random(), 'memdown')
@@ -112,4 +113,50 @@ tape('some other operations', function (t) {
       t.equal(girafa._rev.slice(0, 2), '2-', 'girafa _rev has been bumped')
       return db.child('mammals').read()
     })
+})
+
+tape('map functions', function (t) {
+  db = newdb()
+  return db.set({
+    days: {
+      '2017-04-09': {
+        '13h45': {
+          orange: 10,
+          banana: 13.5
+        },
+        '14h04': {
+          melon: 9,
+          coffee: 34
+        }
+      },
+      '2017-04-10': {
+        '13h34': {
+          juice: 5.50
+        },
+        '13h56': {
+          soup: 12,
+          orange: 12
+        },
+        '14h12': {
+          banana: 12.5,
+          coffee: 34
+        }
+      },
+      '@map': `
+local i = 0
+for time, items in pairs(doc) do
+  for name, value in pairs(items) do
+    emit('sales', name .. doc._key .. i, value)
+    i++
+  end
+end
+      `
+    }
+  })
+  .then(delay(300))
+  .then(() => db.child('days', '@map', 'sales').read())
+  .then(sales => {
+    console.log('SALES', sales)
+    t.equal(Object.keys(sales).length, 9, 'got correct number of sales')
+  })
 })
