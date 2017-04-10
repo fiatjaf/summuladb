@@ -97,7 +97,7 @@ func newDatabase(name, adapter string, path types.Path) summula {
 				}()
 			})
 		},
-		"rows": func(params map[string]interface{}) *js.Object {
+		"records": func(params map[string]interface{}) *js.Object {
 			return js.Global.Get("Promise").New(func(resolve, reject *js.Object) {
 				go func() {
 					defer func() {
@@ -106,40 +106,40 @@ func newDatabase(name, adapter string, path types.Path) summula {
 						}
 					}()
 
-					rowsparams := database.RowsParams{}
+					recordsparams := database.RecordsParams{}
 					if param, given := params["key_start"]; given {
 						if value, correcttype := param.(string); correcttype {
-							rowsparams.KeyStart = value
+							recordsparams.KeyStart = value
 						}
 					}
 					if param, given := params["key_end"]; given {
 						if value, correcttype := param.(string); correcttype {
-							rowsparams.KeyEnd = value
+							recordsparams.KeyEnd = value
 						}
 					}
 					if param, given := params["descending"]; given {
 						if value, correcttype := param.(bool); correcttype {
-							rowsparams.Descending = value
+							recordsparams.Descending = value
 						}
 					}
 					if param, given := params["limit"]; given {
 						if value, correcttype := param.(float64); correcttype {
-							rowsparams.Limit = int(value)
+							recordsparams.Limit = int(value)
 						}
 					}
 
-					trees, err := summa.Rows(path, rowsparams)
+					trees, err := summa.Records(path, recordsparams)
 					if err != nil {
 						reject.Invoke(jsErr(err))
 						return
 					}
 
-					rows := make([]interface{}, len(trees))
+					records := make([]interface{}, len(trees))
 					for i, tree := range trees {
-						rows[i] = tree.ToInterface()
+						records[i] = tree.ToInterface()
 					}
 
-					resolve.Invoke(rows)
+					resolve.Invoke(records)
 				}()
 			})
 		},
