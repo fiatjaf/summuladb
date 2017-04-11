@@ -9,11 +9,11 @@
     "gopher-min": "npm run clean && gopherjs build -m --tags=levelupjs",
     "prebuild": "mkdir -p dist && npm run gopher",
     "prebuild-prod": "mkdir -p dist && npm run gopher-min",
-    "pretest": "npm run gopher",
     "build": "browserify -s SummulaDB -vd summuladb.js > dist/summuladb.js",
     "build-prod": "browserify -s SummulaDB summuladb.js | uglifyjs -c -m > dist/summuladb.min.js 2> /dev/null",
     "build-browser-test": "npm run build-prod && browserify -vd -r memdown -r levelup -u summuladb.js test.js > browser-test/bundle.js",
     "prepare": "npm run build && npm run build-browser-test",
+    "pretest": "npm run gopher",
     "test": "node --require source-map-support/register test.js"
   },
   "author": "",

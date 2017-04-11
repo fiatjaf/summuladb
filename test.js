@@ -8,9 +8,9 @@ function newdb () {
 
 var db
 
-tape.onFinish(function () {
-  db.read().then(full => console.log('db contents on end: ', JSON.stringify(full, null, 2)))
-})
+// tape.onFinish(function () {
+//   db.read().then(full => console.log('db contents on end: ', JSON.stringify(full, null, 2)))
+// })
 
 tape('basic', function (t) {
   db = newdb()
@@ -139,15 +139,15 @@ tape('map functions', function (t) {
         },
         '14h12': {
           banana: 12.5,
-          coffee: 34
+          coffee: 33.7
         }
       },
       '!map': `
 local i = 0
 for time, items in pairs(doc) do
   for name, value in pairs(items) do
-    emit('sales', name .. doc._key .. i, value)
-    i++
+    emit('sales', name .. ":" ..  _key .. ":" .. i, value)
+    i = i + 1
   end
 end
       `
@@ -156,7 +156,16 @@ end
   .then(delay(300))
   .then(() => db.child('days', '!map', 'sales').read())
   .then(sales => {
-    console.log('SALES', sales)
     t.equal(Object.keys(sales).length, 9, 'got correct number of sales')
+    return db.path('days/!map/sales').records({
+      key_start: 'c',
+      key_end: 'mi',
+      descending: true
+    })
+  })
+  .then(sales => {
+    t.equal(sales.length, 4, 'got correct number of records')
+    t.equal(sales[0]._key.split(':')[0], 'melon', 'first record is the last with descending')
+    t.equal(sales.slice(-1)[0]._val, 34, 'last record is the first with descending')
   })
 })
