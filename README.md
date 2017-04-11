@@ -1,4 +1,4 @@
-[![travis ci badge](https://travis-ci.org/fiatjaf/summuladb.svg?branch=master)](https://travis-ci.org/fiatjaf/summuladb)
+[![travis ci badge](https://travis-ci.org/summadb/summuladb.svg?branch=master)](https://travis-ci.org/fiatjaf/summuladb)
 
 # SummulaDB
 
