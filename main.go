@@ -97,7 +97,7 @@ func newDatabase(name, adapter string, path types.Path) summula {
 				}()
 			})
 		},
-		"records": func(params map[string]interface{}) *js.Object {
+		"query": func(params map[string]interface{}) *js.Object {
 			return js.Global.Get("Promise").New(func(resolve, reject *js.Object) {
 				go func() {
 					defer func() {
@@ -106,29 +106,29 @@ func newDatabase(name, adapter string, path types.Path) summula {
 						}
 					}()
 
-					recordsparams := database.RecordsParams{}
+					queryparams := database.QueryParams{}
 					if param, given := params["key_start"]; given {
 						if value, correcttype := param.(string); correcttype {
-							recordsparams.KeyStart = value
+							queryparams.KeyStart = value
 						}
 					}
 					if param, given := params["key_end"]; given {
 						if value, correcttype := param.(string); correcttype {
-							recordsparams.KeyEnd = value
+							queryparams.KeyEnd = value
 						}
 					}
 					if param, given := params["descending"]; given {
 						if value, correcttype := param.(bool); correcttype {
-							recordsparams.Descending = value
+							queryparams.Descending = value
 						}
 					}
 					if param, given := params["limit"]; given {
 						if value, correcttype := param.(float64); correcttype {
-							recordsparams.Limit = int(value)
+							queryparams.Limit = int(value)
 						}
 					}
 
-					trees, err := summa.Records(path, recordsparams)
+					trees, err := summa.Query(path, queryparams)
 					if err != nil {
 						reject.Invoke(jsErr(err))
 						return

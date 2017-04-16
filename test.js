@@ -59,7 +59,7 @@ tape('path operations', function (t) {
 tape('some other operations', function (t) {
   db = newdb()
   return db.set({birds: {}, mammals: {ornitorrinco: true, coelho: true}})
-    .then(() => db.child('mammals').records({key_start: 'ola'}))
+    .then(() => db.child('mammals').query({key_start: 'ola'}))
     .then(rows => {
       t.equal(rows.length, 1, 'got 1 mammal row')
       return db.rev()
@@ -81,16 +81,17 @@ tape('some other operations', function (t) {
     .then(() => db.path('mammals/ornitorrinco').read())
     .then(orn => {
       t.equal(orn._del, true, 'ornitorrinco was deleted')
-      t.deepEqual(Object.keys(orn).length, 3, 'ornitorrinco has 3 keys')
+      t.equal(orn._key, 'ornitorrinco', 'got a _key for "ornitorrinco"')
+      t.deepEqual(Object.keys(orn).length, 4, 'ornitorrinco has 4 keys, including special')
       t.equal(orn._rev.slice(0, 2), '2-', 'rev is correct')
       t.equal(orn.name._val, 'orni', 'deleted node has a child with a value')
-      return db.child('birds').records({descending: true, limit: 1})
+      return db.child('birds').query({descending: true, limit: 1})
     })
     .then(birds => {
       t.equal(birds.length, 1, 'fetched 1 bird only')
       t.equal(birds[0]._key, 'sabiá', 'birds fetched is the last one')
       t.equal(birds[0]._rev.slice(0, 2), '1-', 'sábia rev is correct')
-      return db.child('mammals').records()
+      return db.child('mammals').query()
     })
     .then(mammals => {
       t.equal(mammals.length, 2, 'two mammals lasted')
@@ -156,8 +157,10 @@ end
   .then(delay(300))
   .then(() => db.child('days', '!map', 'sales').read())
   .then(sales => {
+    t.equal(sales._key, 'sales', 'got a _key for "sales"')
+    delete sales._key
     t.equal(Object.keys(sales).length, 9, 'got correct number of sales')
-    return db.path('days/!map/sales').records({
+    return db.path('days/!map/sales').query({
       key_start: 'c',
       key_end: 'mi',
       descending: true
